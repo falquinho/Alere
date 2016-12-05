@@ -5,5 +5,5 @@ package com.falquinho.alere.enums;
  */
 public enum ContextLocationEnum
 {
-    OnClassLocation, OnClassTime, PresentOnClass
+    Present, NotPresent
 }

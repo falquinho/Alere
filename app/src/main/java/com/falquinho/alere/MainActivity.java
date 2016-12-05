@@ -1,9 +1,8 @@
 package com.falquinho.alere;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.support.v4.app.Fragment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,8 +12,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.falquinho.alere.activities.AddCourseActivity;
+import com.falquinho.alere.activities.CourseDetailsActivity;
+import com.falquinho.alere.controller.CoursesRepository;
+import com.falquinho.alere.enums.ContextLocationEnum;
+import com.falquinho.alere.enums.ContextTimeEnum;
+import com.falquinho.alere.fragments.CoursesListFragment;
+import com.falquinho.alere.fragments.TaskFragment;
+import com.falquinho.alere.interfaces.ContextAgregatorInterface;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
+    ContextAgregatorInterface agregator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,6 +42,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if (CoursesRepository.noOfCourses() == 0)
+        {
+            // mostrar tela de adicionar nova materia
+            Intent i = new Intent(getApplicationContext(), AddCourseActivity.class);
+            startActivity(i);
+        }
+
     }
 
     @Override
@@ -75,21 +99,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Fragment fragment = null;
+        Class frag_class = null;
+        
         if (id == R.id.nav_menu_tasks)
         {
             setTitle("Tasks");
+            frag_class = TaskFragment.class;
         }
         else if (id == R.id.nav_menu_courses)
         {
             setTitle("Courses");
+            frag_class = CoursesListFragment.class;
         }
-        else if (id == R.id.nav_menu_calendar)
+
+
+        try
         {
-            setTitle("Calendar");
+            fragment = (Fragment)frag_class.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            item.setChecked(true);
+        }
+        catch (InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }

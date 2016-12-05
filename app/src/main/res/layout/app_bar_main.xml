@@ -20,10 +20,11 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        android:name="com.falquinho.alere.fragments.TaskFragment"
-        android:id="@+id/task_fragment"
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

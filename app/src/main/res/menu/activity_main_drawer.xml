@@ -3,13 +3,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_menu_tasks"
-            android:title="Tasks" />
-        <item
             android:id="@+id/nav_menu_courses"
-            android:title="Courses" />
+            android:icon="@drawable/ic_local_library_black_48dp"
+            android:title="My Courses" />
         <item
-            android:id="@+id/nav_menu_calendar"
-            android:title="Calendar" />
+            android:id="@+id/nav_menu_tasks"
+            android:icon="@drawable/ic_whatshot_black_48dp"
+            android:title="All Tasks"
+            android:checked="true"/>
     </group>
 </menu>

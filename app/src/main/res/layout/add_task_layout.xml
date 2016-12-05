@@ -1,37 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <EditText
+  ,
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_name"
-        android:hint="Task name" />
+        android:layout_height="match_parent">
 
-    <DatePicker
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/task_deadline"
-        android:layout_below="@+id/task_name"
-        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView"
+            android:layout_alignParentEnd="false"
+            android:padding="@dimen/abc_action_bar_icon_vertical_padding_material">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edittext_task_name"
+                    android:hint="Task name" />
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_below="@+id/task_deadline"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:hint="Task description" />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/abc_action_bar_elevation_material">
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fab_done_add_task"
-        android:src="@drawable/ic_done_white_48dp"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" />
-</RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="In Course"
+                        android:id="@+id/textView3"
+                        android:layout_gravity="left" />
+
+                    <Space
+                        android:layout_width="20px"
+                        android:layout_height="20px" />
+
+                    <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinner_available_courses"
+                        android:layout_gravity="right" />
+                </LinearLayout>
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editText"
+                    android:layout_centerHorizontal="true"
+                    android:hint="Task description" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Deadline"
+                    android:id="@+id/textView2"
+                    android:paddingTop="@dimen/abc_action_bar_elevation_material" />
+
+                <DatePicker
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/datepicker_deadline" />
+            </LinearLayout>
+        </ScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fab_done_add_task"
+            android:src="@drawable/ic_done_white_48dp"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="8dp" />
+    </RelativeLayout>
+</LinearLayout>
