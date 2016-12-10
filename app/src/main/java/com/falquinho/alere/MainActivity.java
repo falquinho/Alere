@@ -9,21 +9,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.falquinho.alere.activities.AddCourseActivity;
+import com.falquinho.alere.activities.AddTaskActivity;
 import com.falquinho.alere.activities.CourseDetailsActivity;
+import com.falquinho.alere.agregators.ContextAgregator;
 import com.falquinho.alere.controller.CoursesRepository;
-import com.falquinho.alere.enums.ContextLocationEnum;
-import com.falquinho.alere.enums.ContextTimeEnum;
+import com.falquinho.alere.enums.SystemContext;
 import com.falquinho.alere.fragments.CoursesListFragment;
 import com.falquinho.alere.fragments.TaskFragment;
-import com.falquinho.alere.interfaces.ContextAgregatorInterface;
+import com.falquinho.alere.interpreter.LocationInterpreter;
+import com.falquinho.alere.interpreter.TimeInterpreter;
+import com.falquinho.alere.model.Course;
+import com.falquinho.alere.widgets.LocationWidget;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    ContextAgregatorInterface agregator;
+    protected static SystemContext last_know_context;
+    protected static Course last_related_course;
+
+    protected ContextAgregator m_agregator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,6 +51,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        LocationWidget loc_widget = LocationWidget.initializeLocationWidget(this);
+        if (loc_widget == null)
+            loc_widget = LocationWidget.requestLocationWidget();
+
+        LocationInterpreter loc_inter = new LocationInterpreter(loc_widget);
+        TimeInterpreter time_inter    = new TimeInterpreter();
+
+        m_agregator = new ContextAgregator(loc_inter, time_inter, CoursesRepository.getAllCourses());
+
     }
 
     @Override
@@ -54,6 +74,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // mostrar tela de adicionar nova materia
             Intent i = new Intent(getApplicationContext(), AddCourseActivity.class);
             startActivity(i);
+        }
+
+        SystemContext my_context = m_agregator.agregateSystemContext();
+        Course related_course = m_agregator.getRelatedCourse();
+
+        if (my_context != last_know_context || related_course != last_related_course)
+        {
+            last_know_context = my_context;
+            last_related_course = related_course;
+
+            doContextualAction(my_context, m_agregator.getRelatedCourse());
         }
 
     }
@@ -97,41 +128,76 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        Fragment fragment = null;
-        Class frag_class = null;
-        
+        int id = item.getItemId();
         if (id == R.id.nav_menu_tasks)
         {
-            setTitle("Tasks");
-            frag_class = TaskFragment.class;
+            setFragmentAllTasks();
         }
         else if (id == R.id.nav_menu_courses)
         {
-            setTitle("Courses");
-            frag_class = CoursesListFragment.class;
+            setFragmentMyCourses();
         }
-
-
-        try
-        {
-            fragment = (Fragment)frag_class.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-            item.setChecked(true);
-        }
-        catch (InstantiationException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
+        item.setChecked(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    protected void doContextualAction(SystemContext my_context, Course related_course)
+    {
+        if (my_context == SystemContext.notPresent)
+        {
+            Log.i("MainActivity", "SYSTEM CONTEXT: NOT_PRESENT");
+            setFragmentAllTasks();
+        }
+        else if (my_context == SystemContext.presentFirstHalf)
+        {
+            Log.i("MainActivity", "SYSTEM CONTEXT: PRESENT_FIRST_HALF");
+            startCourseDetailsActivity(related_course);
+        }
+        else if (my_context == SystemContext.presentLastHalf)
+        {
+            Log.i("MainActivity", "SYSTEM CONTEXT: PRESENT_LAST_HALF");
+            startAddTaskActivity(related_course);
+        }
+    }
+
+    protected void setFragmentAllTasks()
+    {
+        setTitle("All Tasks");
+        Fragment fragment = new TaskFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+    }
+
+    protected void setFragmentMyCourses()
+    {
+        setTitle("My Courses");
+        Fragment fragment = new CoursesListFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+    }
+
+    protected void startCourseDetailsActivity(Course relative_course)
+    {
+        if (relative_course == null)
+        {
+            Log.i("MainActivity","ERROR Startign CourseDetailActivity: relative_course is null");
+            return;
+        }
+
+        Intent intent = new Intent(this, CourseDetailsActivity.class);
+        intent.putExtra(AddTaskActivity.ASSOCIATED_COURSE_ID, relative_course.getName());
+
+        startActivity(intent);
+    }
+
+    protected void startAddTaskActivity(Course relative_course)
+    {
+        Intent intent = new Intent(this, AddTaskActivity.class);
+        intent.putExtra(AddTaskActivity.ASSOCIATED_COURSE_ID, relative_course.getName());
+
+        startActivity(intent);
     }
 }

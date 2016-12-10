@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.falquinho.alere.R;
 import com.falquinho.alere.activities.AddCourseActivity;
+import com.falquinho.alere.activities.AddTaskActivity;
 import com.falquinho.alere.activities.CourseDetailsActivity;
 import com.falquinho.alere.controller.CoursesRepository;
 import com.falquinho.alere.listadapters.CoursesListAdapter;
@@ -49,7 +50,7 @@ public class CoursesListFragment extends ListFragment implements View.OnClickLis
         Course course = (Course)l.getItemAtPosition(pos);
 
         Intent intent = new Intent(getActivity(), CourseDetailsActivity.class);
-        intent.putExtra(CourseDetailsActivity.ASSOCIATED_COURSE_ID, course.getName());
+        intent.putExtra(AddTaskActivity.ASSOCIATED_COURSE_ID, course.getName());
 
         startActivity(intent);
     }

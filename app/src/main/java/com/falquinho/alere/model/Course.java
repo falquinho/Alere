@@ -1,6 +1,7 @@
 package com.falquinho.alere.model;
 
-import java.util.Vector;
+import android.location.Location;
+
 
 /**
  * Created by falquinho on 02/12/2016.
@@ -10,50 +11,21 @@ public class Course
     public static final int MIN_DURATION   = 1;
     public static final int MAX_DURATION   = 300;
     public static final int MIN_START_TIME = 0;
-    public static final int MAN_START_TIME = 23*60 + 59;
+    public static final int MAX_START_TIME = 23*60 + 59;
 
     private String      name;
     private boolean[]   weekdays;
     private int         start_at;
     private int         duration;
+    private Location    location;
 
-    private Vector<Task> myTasks;
-
-    public Course (String n, boolean[] days, int start, int dur)
+    public Course (String n, boolean[] days, int start, int dur,Location loc)
     {
         name        = n;
         weekdays    = days;
         start_at    = start;
         duration    = dur;
-
-        myTasks = new Vector<>();
-    }
-
-    public void addTask(Task t)
-    {
-        if (getTask(t.getName()) != null)
-        {
-            System.out.println("Course.addTask: ERROR: task with this name already exists");
-            return;
-        }
-
-        myTasks.add(t);
-    }
-
-    public Task getTask(String name)
-    {
-        for (int i=0; i<myTasks.size(); ++i)
-        {
-            if (myTasks.elementAt(i).getName() == name)
-                return myTasks.elementAt(i);
-        }
-
-        return null;
-    }
-
-    public Vector<Task> getMyTasks()
-    {
-        return myTasks;
+        location    = loc;
     }
 
     public String getName()
@@ -76,11 +48,6 @@ public class Course
         return duration;
     }
 
-    public boolean happensOnTime(int time)
-    {
-        if (time >= start_at && time <= start_at+duration)
-            return true;
+    public Location getLocation(){ return location; }
 
-        return false;
-    }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.falquinho.alere.R;
 import com.falquinho.alere.controller.CoursesRepository;
+import com.falquinho.alere.controller.TaskRepository;
 import com.falquinho.alere.model.Course;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class CoursesListAdapter extends ArrayAdapter<Course>
         ((TextView)convert.findViewById(R.id.listitem_course_name)).setText(c.getName());
 
         String s = new String("");
-        s = s.concat(String.valueOf(c.getMyTasks().size()));
+        s = s.concat(String.valueOf(TaskRepository.getTasksOwnedBy(c.getName()).size()));
         s = s.concat(" Tasks Registered");
 
         ((TextView)convert.findViewById(R.id.listitem_no_tasks)).setText(s);

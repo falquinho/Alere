@@ -10,6 +10,14 @@ public class Task
     String description;
     Deadline deadline;
 
+    public Task(String o, String n, String d, Deadline dl)
+    {
+        name        = n;
+        owner       = o;
+        description = d;
+        deadline    = dl;
+    }
+
     public String getName()
     {
         return name;

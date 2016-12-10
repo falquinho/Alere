@@ -48,15 +48,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/spinner_available_courses"
-                        android:layout_gravity="right" />
+                        android:textAlignment="textEnd" />
                 </LinearLayout>
+
+                <Space
+                    android:layout_width="20px"
+                    android:layout_height="20px" />
 
                 <EditText
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editText"
+                    android:id="@+id/editText_add_task_description"
                     android:layout_centerHorizontal="true"
                     android:hint="Task description" />
+
+                <Space
+                    android:layout_width="20px"
+                    android:layout_height="20px" />
 
                 <TextView
                     android:layout_width="wrap_content"

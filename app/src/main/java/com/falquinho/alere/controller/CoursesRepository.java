@@ -1,5 +1,6 @@
 package com.falquinho.alere.controller;
 
+import android.location.Location;
 import android.os.Debug;
 import android.util.Log;
 
@@ -21,7 +22,7 @@ public class CoursesRepository
 
     static Vector<Course> courses = new Vector<Course>();
 
-    public static int addCourse(String n, boolean[] days, int start, int duration)
+    public static int addCourse(String n, boolean[] days, int start, int duration, Location loc)
     {
         if (days.length != 7)
         {
@@ -29,7 +30,7 @@ public class CoursesRepository
             return ERROR_DAYS_ARRAY_BAD_SIZE;
         }
 
-        if (start > Course.MAX_DURATION || start < Course.MIN_START_TIME)
+        if (start > Course.MAX_START_TIME || start < Course.MIN_START_TIME)
         {
             Log.i("CourseRepository","addCourse: start out of bounds");
             return ERROR_START_TIME_OUT_OF_BOUNDS;
@@ -53,19 +54,29 @@ public class CoursesRepository
             return ERROR_NAME_EMPTY;
         }
 
-        courses.add(new Course(n, days, start, duration));
+        if (loc == null)
+        {
+            Log.i("CoursesRepository", "WARNING: LOCATION IS NULL");
+        }
+
+        courses.add(new Course(n, days, start, duration, loc));
 
         return SUCCESS_ADD;
     }
 
     public static Course getCourse(String name)
     {
-        for (int i=0;i<courses.size();++i)
+        Log.i("CourseRepository","getCourse()");
+
+        for (int i=0;i<courses.size();i++)
         {
-            if (courses.elementAt(i).getName() == name)
+            Log.i("CourseRepository","Course: ".concat(courses.elementAt(i).getName()));
+
+            if (name.equals(courses.elementAt(i).getName()))
                 return courses.elementAt(i);
         }
 
+        Log.i("CourseRepository","getCourse: ".concat(name).concat(" not found"));
         return null;
     }
 

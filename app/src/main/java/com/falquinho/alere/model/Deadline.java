@@ -1,5 +1,9 @@
 package com.falquinho.alere.model;
 
+import android.os.SystemClock;
+
+import java.util.Calendar;
+
 /**
  * Created by falquinho on 02/12/2016.
  */
@@ -17,13 +21,13 @@ public class Deadline
     }
 
     // errado, mas deve servir para proposito de teste
-    public int daysDifference(Deadline d)
+    public int daysLeft()
     {
-        int year_diff = d.getYear() - year;
-        int month_diff = d.getMonth() - month;
-        int days_diff = d.getDay() - day;
+        int curr_year = Calendar.getInstance().get(Calendar.YEAR);
+        int curr_mont = Calendar.getInstance().get(Calendar.MONTH);
+        int curr_day  = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
-        return (year_diff * 365 + month_diff * 60 + days_diff);
+        return ((year-curr_year)*365)+((month-curr_mont)*30)+(day-curr_day);
     }
 
     public int getMonth()

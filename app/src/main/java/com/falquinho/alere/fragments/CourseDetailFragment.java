@@ -2,6 +2,7 @@ package com.falquinho.alere.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.falquinho.alere.R;
+import com.falquinho.alere.activities.AddTaskActivity;
 import com.falquinho.alere.activities.CourseDetailsActivity;
 import com.falquinho.alere.controller.CoursesRepository;
 import com.falquinho.alere.model.Course;
@@ -21,16 +23,18 @@ public class CourseDetailFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        String course_id = getArguments().getString(CourseDetailsActivity.ASSOCIATED_COURSE_ID);
+        String course_id = getArguments().getString(AddTaskActivity.ASSOCIATED_COURSE_ID);
         course = CoursesRepository.getCourse(course_id);
+
+        Log.i("CourseDetailFragment","Related Course ID: ".concat(course_id));
 
         return inflater.inflate(R.layout.fragment_course_detail, container, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle saved_instance)
+    public void onResume()
     {
-        super.onActivityCreated(saved_instance);
+        super.onResume();
 
         if (course != null)
         {
@@ -38,6 +42,8 @@ public class CourseDetailFragment extends Fragment
             setupViewStartTime();
             setupViewDuration();
         }
+        else
+            Log.i("CourseDetailFragment","Error: Related Course is null");
     }
 
     private void setupViewWeekRepetition()

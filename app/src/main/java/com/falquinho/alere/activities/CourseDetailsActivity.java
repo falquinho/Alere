@@ -13,8 +13,6 @@ import com.falquinho.alere.fragments.TaskFragment;
 
 public class CourseDetailsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener
 {
-    public final static String ASSOCIATED_COURSE_ID = "associated_course";
-
     TabLayout tab_layout;
     String course_id;
 
@@ -24,14 +22,16 @@ public class CourseDetailsActivity extends AppCompatActivity implements TabLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_details);
 
-        course_id = getIntent().getStringExtra(CourseDetailsActivity.ASSOCIATED_COURSE_ID);
+        course_id = getIntent().getStringExtra(AddTaskActivity.ASSOCIATED_COURSE_ID);
 
         getSupportActionBar().setTitle(course_id);
 
         tab_layout = (TabLayout)findViewById(R.id.tablayout);
         tab_layout.addOnTabSelectedListener(this);
 
-        setupDefaultFragment();
+        setDetailsFragment();
+
+        Log.i("CourseDetailActivity","Related Course ID: ".concat(course_id));
     }
 
     @Override
@@ -39,27 +39,29 @@ public class CourseDetailsActivity extends AppCompatActivity implements TabLayou
     {
         Log.i("CourseDetailActivity", "Tab Selected: "+tab.getText());
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Fragment fragment = null;
-
         if (tab_layout.getSelectedTabPosition() == 0)
         {
-            fragment = new CourseDetailFragment();
+            setDetailsFragment();
         }
         else if (tab_layout.getSelectedTabPosition() == 1)
         {
-            fragment = new TaskFragment();
+            setTasksFragment();
         }
+    }
 
-        fragment.setArguments(bundledCourseId());
-        transaction.replace(R.id.course_details_fragment_container, fragment);
+    private void setDetailsFragment()
+    {
+        Fragment default_fragment = new CourseDetailFragment();
+        default_fragment.setArguments(bundledCourseId());
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.course_details_fragment_container, default_fragment);
         transaction.commit();
     }
 
-    private  void setupDefaultFragment()
+    private void setTasksFragment()
     {
-        Fragment default_fragment = new CourseDetailFragment();
+        Fragment default_fragment = new TaskFragment();
         default_fragment.setArguments(bundledCourseId());
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -70,7 +72,7 @@ public class CourseDetailsActivity extends AppCompatActivity implements TabLayou
     private Bundle bundledCourseId()
     {
         Bundle data = new Bundle();
-        data.putString(CourseDetailsActivity.ASSOCIATED_COURSE_ID, course_id);
+        data.putString(AddTaskActivity.ASSOCIATED_COURSE_ID, course_id);
 
         return data;
     }

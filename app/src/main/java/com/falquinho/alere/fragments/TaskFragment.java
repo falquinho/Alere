@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.falquinho.alere.R;
 import com.falquinho.alere.activities.AddTaskActivity;
 import com.falquinho.alere.controller.CoursesRepository;
+import com.falquinho.alere.controller.TaskRepository;
+import com.falquinho.alere.listadapters.TasksListAdapter;
 import com.falquinho.alere.model.Course;
 
 /**
@@ -21,6 +23,8 @@ import com.falquinho.alere.model.Course;
 
 public class TaskFragment extends ListFragment implements View.OnClickListener
 {
+    String course_id;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
@@ -35,6 +39,20 @@ public class TaskFragment extends ListFragment implements View.OnClickListener
         FloatingActionButton fab;
         fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add_task);
         fab.setOnClickListener(this);
+
+        Bundle bundle = getArguments();
+
+        TasksListAdapter adapter;
+        if (bundle == null)
+            adapter = new TasksListAdapter(getActivity(), TaskRepository.getAllTasks());
+        else
+        {
+            course_id = bundle.getString(AddTaskActivity.ASSOCIATED_COURSE_ID);
+            adapter = new TasksListAdapter(getActivity(), TaskRepository.getTasksOwnedBy(course_id));
+        }
+
+        setListAdapter(adapter);
+
     }
 
     @Override
@@ -50,6 +68,7 @@ public class TaskFragment extends ListFragment implements View.OnClickListener
         }
 
         Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+        intent.putExtra(AddTaskActivity.ASSOCIATED_COURSE_ID, course_id);
         startActivity(intent);
     }
 }

@@ -1,5 +1,6 @@
 package com.falquinho.alere.activities;
 
+import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,11 +17,13 @@ import com.falquinho.alere.R;
 import com.falquinho.alere.controller.CoursesRepository;
 import com.falquinho.alere.model.Course;
 import com.falquinho.alere.model.Deadline;
+import com.falquinho.alere.widgets.LocationWidget;
 
 public class AddCourseActivity extends AppCompatActivity implements View.OnClickListener
 {
     EditText et_name;
     NumberPicker start_hour, start_min, duration;
+    LocationWidget loc_widget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,6 +35,8 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
         fab.setOnClickListener(this);
 
         setTitle("Add a Course");
+
+        loc_widget = LocationWidget.requestLocationWidget();
 
         duration = (NumberPicker)findViewById(R.id.numberPicker_duration);
         duration.setMinValue(Course.MIN_DURATION);
@@ -61,12 +66,23 @@ public class AddCourseActivity extends AppCompatActivity implements View.OnClick
         days[5] = ((CheckBox)findViewById(R.id.checkBox_fri)).isChecked();
         days[6] = ((CheckBox)findViewById(R.id.checkBox_sat)).isChecked();
 
-        int start = start_hour.getValue()*60 + start_min.getValue();
-        int dur =   duration.getValue();
-        String name = et_name.getText().toString();
-        name = name.trim();
+        CheckBox use_location = (CheckBox)findViewById(R.id.checkBox_use_location);
 
-        int result = CoursesRepository.addCourse(name, days, start, dur);
+        int start    = start_hour.getValue()*60 + start_min.getValue();
+        int dur      = duration.getValue();
+        String name  = et_name.getText().toString();
+        name         = name.trim();
+
+        Location loc = null;
+        if (use_location.isChecked())
+        {
+            if (loc_widget != null)
+                loc = loc_widget.getLastLocation();
+            else
+                Log.i("AddCourseActivity","LocationWidget is null. Make sure you initialize it");
+        }
+
+        int result = CoursesRepository.addCourse(name, days, start, dur, loc);
 
         notifyResult(result);
 
