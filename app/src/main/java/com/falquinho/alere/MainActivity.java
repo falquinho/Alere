@@ -28,11 +28,10 @@ import com.falquinho.alere.widgets.LocationWidget;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
-    protected static SystemContext last_know_context;
+    protected static SystemContext last_context;
     protected static Course last_related_course;
 
     protected ContextAgregator m_agregator;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,31 +61,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         m_agregator = new ContextAgregator(loc_inter, time_inter, CoursesRepository.getAllCourses());
 
+        setFragmentMyCourses();
     }
 
     @Override
-    protected void onResume()
+    protected void onStart()
     {
-        super.onResume();
+        super.onStart();
 
         if (CoursesRepository.noOfCourses() == 0)
         {
-            // mostrar tela de adicionar nova materia
             Intent i = new Intent(getApplicationContext(), AddCourseActivity.class);
             startActivity(i);
         }
 
-        SystemContext my_context = m_agregator.agregateSystemContext();
-        Course related_course = m_agregator.getRelatedCourse();
+        SystemContext curr_context   = m_agregator.agregateSystemContext();
+        Course        related_course = m_agregator.getRelatedCourse();
 
-        if (my_context != last_know_context || related_course != last_related_course)
-        {
-            last_know_context = my_context;
-            last_related_course = related_course;
+        doContextualAction(curr_context, related_course);
+    }
 
-            doContextualAction(my_context, m_agregator.getRelatedCourse());
-        }
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
 
+        LocationWidget.requestLocationWidget().closeConnectionGoogleAPI();
     }
 
     @Override
@@ -118,9 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -148,6 +146,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void doContextualAction(SystemContext my_context, Course related_course)
     {
+        if (my_context == last_context && related_course == last_related_course)
+        {
+            Log.i("MainActivity","doContextualAction: system context hasnt changed");
+            return;
+        }
+
+        last_context = my_context;
+        last_related_course = related_course;
+
         if (my_context == SystemContext.notPresent)
         {
             Log.i("MainActivity", "SYSTEM CONTEXT: NOT_PRESENT");

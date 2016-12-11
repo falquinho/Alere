@@ -15,23 +15,32 @@ public class TimeInterpreter
 {
     public TimeContext getRelativeTimeContext(Course course)
     {
-        int hour = Calendar.getInstance().get(Calendar.HOUR);
+        Log.i("TimeContext","getRelativeTimeContext <START>");
+        TimeContext c = TimeContext.notOnCoursePeriod;
+
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int min  = Calendar.getInstance().get(Calendar.MINUTE);
+
+        Log.i("Calendar Hour:",String.valueOf(hour));
+        Log.i("Calendar Mins:",String.valueOf(min));
 
         int canonical = hour*60 + min;
 
         if (canonical >= course.getStartTime() && canonical <= course.getStartTime()+(course.getDuration()/2))
         {
-            Log.i("TimeInterpreter", "Relative Context is: onCourseFirstHalf");
-            return TimeContext.onCourseFirstHalf;
+            Log.i("TimeInterpreter", "onCourseFirstHalf");
+            c = TimeContext.onCourseFirstHalf;
         }
-
-        if (canonical > course.getStartTime()+(course.getDuration()/2) && canonical <= course.getStartTime()+course.getDuration())
+        else if (canonical > course.getStartTime()+(course.getDuration()/2) && canonical <= course.getStartTime()+course.getDuration())
         {
-            Log.i("TimeInterpreter", "Relative Context is: onCourseLastHalf");
-            return TimeContext.onCourseLastHalf;
+            Log.i("TimeInterpreter", "onCourseLastHalf");
+            c = TimeContext.onCourseLastHalf;
         }
+        else
+            Log.i("TimeInterpreter", "notOnCoursePeriod");
 
-        return TimeContext.notOnCoursePeriod;
+
+        Log.i("TimeContext","getRelativeTimeContext <END>");
+        return c;
     }
 }

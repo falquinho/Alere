@@ -11,14 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.falquinho.alere.interfaces.LocationWidgetListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-import java.util.Vector;
 
 /**
  * Created by falquinho on 07/12/2016.
@@ -30,8 +27,6 @@ public class LocationWidget implements GoogleApiClient.ConnectionCallbacks, Goog
     protected GoogleApiClient google_api;
     protected Context context;
 
-    protected Vector<LocationWidgetListener> my_listeners;
-
     protected Location last_location;
 
     protected LocationWidget(Context android_context)
@@ -41,7 +36,6 @@ public class LocationWidget implements GoogleApiClient.ConnectionCallbacks, Goog
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
 
-        my_listeners  = new Vector<>();
         last_location = null;
         context       = android_context;
 
@@ -77,11 +71,6 @@ public class LocationWidget implements GoogleApiClient.ConnectionCallbacks, Goog
         return last_location;
     }
 
-    public void addListener(LocationWidgetListener listener)
-    {
-        my_listeners.add(listener);
-    }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         LocationRequest lr = buildLocationRequest();
@@ -114,11 +103,6 @@ public class LocationWidget implements GoogleApiClient.ConnectionCallbacks, Goog
         Log.i("LocationWidget","LOCATION UPDATED");
 
         last_location = location;
-
-        for (int i = 0; i < my_listeners.size(); i++)
-        {
-            my_listeners.elementAt(i).locationUpdate(location);
-        }
     }
 
     @Override

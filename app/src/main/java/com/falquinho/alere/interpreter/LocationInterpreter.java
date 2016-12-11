@@ -1,22 +1,16 @@
 package com.falquinho.alere.interpreter;
 
-import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
-import com.falquinho.alere.controller.CoursesRepository;
 import com.falquinho.alere.enums.LocationContext;
-import com.falquinho.alere.interfaces.LocationInterpreterListener;
-import com.falquinho.alere.interfaces.LocationWidgetListener;
 import com.falquinho.alere.model.Course;
 import com.falquinho.alere.widgets.LocationWidget;
-import com.google.android.gms.location.LocationListener;
-
-import java.util.Vector;
 
 /**
  * Created by falquinho on 07/12/2016.
  */
-public class LocationInterpreter implements LocationWidgetListener
+public class LocationInterpreter
 {
     public static final float COURSE_AREA_RADIUS = 20f;
 
@@ -38,15 +32,15 @@ public class LocationInterpreter implements LocationWidgetListener
         float distance = last_known.distanceTo(course.getLocation());
 
         if (distance <= LocationInterpreter.COURSE_AREA_RADIUS)
+        {
+            Log.i("LocationInterpreter","contextRelativeTo(): onCourseLocation");
             return LocationContext.onCourseLocation;
+        }
         else
+        {
+            Log.i("LocationInterpreter","contextRelativeTo(): notOnCourseLocation");
             return LocationContext.notOnCourseLocation;
-    }
-
-    @Override
-    public void locationUpdate(Location new_location)
-    {
-        //
+        }
     }
 
 }

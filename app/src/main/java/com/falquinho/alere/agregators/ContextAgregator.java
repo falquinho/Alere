@@ -1,5 +1,7 @@
 package com.falquinho.alere.agregators;
 
+import android.util.Log;
+
 import com.falquinho.alere.enums.LocationContext;
 import com.falquinho.alere.enums.SystemContext;
 import com.falquinho.alere.enums.TimeContext;
@@ -29,6 +31,7 @@ public class ContextAgregator
 
     public SystemContext agregateSystemContext()
     {
+        Log.i("ContextAgregator","agregateSystemContext() START");
         SystemContext context = SystemContext.notPresent;
         related_course = null;
 
@@ -36,6 +39,7 @@ public class ContextAgregator
         for (int i = 0; i < user_courses.size(); i++)
         {
             Course c = user_courses.elementAt(i);
+            Log.i("Current Course: ",c.getName());
 
             TimeContext t_context = time_interpreter.getRelativeTimeContext(c);
             LocationContext l_context = loca_interpreter.contextRelativeTo(c);
@@ -52,6 +56,7 @@ public class ContextAgregator
             }
         }
 
+        Log.i("ContextAgregator","agregateSystemContext() END");
         return context;
     }
 
@@ -59,4 +64,5 @@ public class ContextAgregator
     {
         return related_course;
     }
+
 }
